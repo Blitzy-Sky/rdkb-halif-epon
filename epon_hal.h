@@ -280,19 +280,19 @@ typedef enum {
  *          destination cannot be changed at run time through this interface.
  *
  * @see HAL_LOG
- * 
+ *
  * Example for RDK Logger:
  * @code
  * #define HAL_LOG_FUNCTION(level, func, line, format, ...) \
  *     RDK_LOG(rdk_log_map[level], "LOG.RDK.HAL", "[%s:%d] " format, func, line, ##__VA_ARGS__)
  * @endcode
- * 
+ *
  * Example for printf:
  * @code
  * #define HAL_LOG_FUNCTION(level, func, line, format, ...) \
  *     printf("[HAL][%s:%d] " format "\n", func, line, ##__VA_ARGS__)
  * @endcode
- * 
+ *
  * Example for syslog:
  * @code
  * #define HAL_LOG_FUNCTION(level, func, line, format, ...) \
@@ -608,7 +608,7 @@ typedef struct {
     uint64_t broadcast_packets_received; /*!< Broadcast packets received since the last reset. An EPON extension. */
     uint64_t multicast_packets_sent; /*!< Multicast packets transmitted since the last reset. An EPON extension. */
     uint64_t multicast_packets_received; /*!< Multicast packets received since the last reset. An EPON extension. */
-    uint64_t ranging_resyncs;        /*!< Times the ONU has had to re-run MPCP ranging since the last reset. An EPON extension. A non-zero and rising value indicates instability in the optical path or in the OLT relationship. */ 
+    uint64_t ranging_resyncs;        /*!< Times the ONU has had to re-run MPCP ranging since the last reset. An EPON extension. A non-zero and rising value indicates instability in the optical path or in the OLT relationship. */
     uint64_t mac_resets;             /*!< Times the EPON MAC has been reset since the last reset of the counters. An EPON extension. This counts MAC-level resets, which are not the same event as an epon_hal_reset_onu() call. */
 } epon_hal_link_stats_t;
 
@@ -1857,7 +1857,7 @@ epon_hal_return_t epon_hal_get_interface_list(epon_interface_list_t *if_list);
  * @see epon_olt_info_t
  * @see epon_onu_status_t
  * @see epon_hal_get_manufacturer_info
- * 
+ *
  * Example usage:
  * @code
  * epon_olt_info_t olt_info = {0};
@@ -1966,11 +1966,17 @@ epon_hal_return_t epon_hal_get_olt_info(epon_olt_info_t *olt_info);
  */
 epon_hal_return_t epon_hal_set_oam_log_mask(uint32_t oam_log_mask);
 
+/** @} */  //END OF GROUP EPON_HAL_APIS
 
 /* ============================================================================
  * DPoE (DOCSIS Provisioning of EPON) Extension APIs
  * Enable with -DEPON_HAL_DPOE_SUPPORT at compile time
  * ============================================================================ */
+
+/**
+ * @addtogroup EPON_HAL_TYPES
+ * @{
+ */
 
 /**
  * @brief How a CPE MAC address came to be in the DPoE table.
@@ -2055,6 +2061,13 @@ typedef struct {
     uint32_t dynamic_cpe_count;    /*!< Number of learned rows in `cpe_list`. Together with `static_cpe_count` it gives the array's element count; neither member bounds the array on its own. */
     dpoe_cpe_mac_entry_t *cpe_list; /*!< Array of `static_cpe_count + dynamic_cpe_count` rows, allocated by the implementation and **freed by the caller**. Where both counts are zero this interface does not state what this member holds, so a caller checks the counts before dereferencing and before freeing. @see dpoe_hal_get_cpe_mac_table */
 } dpoe_cpe_mac_table_t;
+
+/** @} */  //END OF GROUP EPON_HAL_TYPES
+
+/**
+ * @addtogroup EPON_HAL_APIS
+ * @{
+ */
 
 /**
  * @brief Reads the DPoE CPE MAC address table into a caller-supplied structure,
