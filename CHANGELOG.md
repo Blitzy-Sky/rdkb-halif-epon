@@ -5,10 +5,13 @@ All notable changes to `rdkb-halif-epon` are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this
 repository adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Every release heading below names a tag that exists in this repository, and its date is the date of
-the commit that tag marks. A `git describe --tags` string such as `v1.0.0-6-g<commit>` denotes a
-number of commits past a tag rather than a release, so it never appears here as a release heading.
-Work that is not yet tagged is listed under `Unreleased`.
+Every release heading below names a tag that exists in this repository. **The date in a release
+heading is the author date of the commit that tag marks, not the date the tag object was created.**
+The two are not interchangeable here - for `v1.0.0` they are more than two months apart - so where
+this file or the specification prints a date it says which of the two it is. A `git describe --tags`
+string such as `v1.0.0-6-g<commit>` denotes a number of commits past a tag rather than a release, so
+it never appears here as a release heading. Work that is not yet tagged is listed under
+`Unreleased`.
 
 Two version numbers travel with this repository, and they are not the same kind of thing:
 
@@ -24,8 +27,11 @@ without moving the other.
 
 ## Unreleased
 
-Changes that are merged but not yet part of a tagged release
-([compare with v1.0.0](https://github.com/rdkcentral/rdkb-halif-epon/compare/v1.0.0...HEAD)).
+Changes that are merged but not yet part of a tagged release. Their base is
+[`v1.0.0`](https://github.com/rdkcentral/rdkb-halif-epon/releases/tag/v1.0.0); no comparison link is
+given, because the only endpoint available for one today is a branch tip rather than a tag, and a
+link whose target moves would not stay accurate. A comparison link is added here once the release
+that carries these changes is tagged.
 
 ### Added
 
@@ -34,10 +40,13 @@ Changes that are merged but not yet part of a tagged release
   surface. This is the repository's first specification document.
 - `docs/generate_docs.sh` - entry point that builds the specification into browsable HTML with the
   `rdkcentral/hal-doxygen` generator, pinned at tag `1.2.0`.
-- `docs/.gitignore` - excludes the generator clone and its generated output from version control.
-- Five symlinks in `docs/pages/` - `CHANGELOG.md`, `CONTRIBUTING.md`, `COPYING.md`, `LICENSE.md`
-  and `NOTICE.md` - so the repository-root governance and legal files render alongside the
-  specification in the generated documentation.
+- `docs/.gitignore` - excludes `build` (the generator clone), `output` (the generated HTML) and
+  `node_modules` from version control, so a documentation build leaves nothing to commit.
+- Five symlinks in `docs/pages/`, so the repository-root governance and legal files render alongside
+  the specification in the generated documentation: `CHANGELOG.md` to `../../CHANGELOG.md`,
+  `CONTRIBUTING.md` to `../../CONTRIBUTING.md`, `COPYING.md` to `../../COPYING`, `LICENSE.md` to
+  `../../LICENSE` and `NOTICE.md` to `../../NOTICE`. No root file was copied or altered to create
+  them.
 - `include/epon_hal.h` - a symlink to `../epon_hal.h`, which brings the header inside the
   documentation generator's input path so its inline documentation is extracted. The header itself
   does not move: `epon_hal.h` remains the published include path, and the symlink adds a second
@@ -48,18 +57,51 @@ Changes that are merged but not yet part of a tagged release
 
 - `README.md` is now a symlink to `docs/pages/halSpec.md`, so the interface specification is the
   repository's landing page. It previously carried a two-line description of the repository.
-- The inline Doxygen documentation in `epon_hal.h` was expanded to document every declared
-  function, its parameters, its return values and its ordering constraints. **This change is
-  comment-only.** No declaration, signature, typedef, macro value or enumerator was altered, so the
-  API surface is unchanged and a vendor implementation built against 1.0.0 does not need
-  re-qualification.
+- The inline Doxygen documentation in `epon_hal.h` was expanded. Specifically:
+  - All fifteen declared functions now carry a full caller contract: per-parameter direction,
+    valid range, array length and buffer ownership; the pre-conditions the call imposes and the
+    status returned when one is not met; the post-conditions on success and what is left
+    unspecified on failure; what a caller should do about each documented status; and an explicit
+    statement of whether the call may block and whether it is thread safe. Where the interface
+    establishes neither - thread safety on all fifteen, and blocking on the fourteen other than
+    `epon_hal_init`, whose three-minute `EPON_HAL_ERROR_TIMEOUT` bound does establish it - the
+    block records the property as unspecified rather than asserting a behaviour.
+  - Return documentation is now classified by what each function returns. `epon_hal_get_version`
+    returns a value, so it describes the packed `0xMMmmpppp` encoding under `@return` and carries
+    no `@retval`; the other fourteen return `epon_hal_return_t` and keep `@retval` per status. **No
+    `@retval` was added, removed or reworded** - the set of status codes each function documents is
+    identical to 1.0.0.
+  - Nine types that carried no description gained one: `epon_onu_status_t`, `epon_llid_mode_t`,
+    `epon_llid_state_t`, `epon_llid_forwarding_state_t`, `epon_llid_list_t`,
+    `epon_onu_manufacturer_info_t`, `epon_encryption_mode_t`, `epon_interface_list_t` and
+    `epon_hal_config_t`. The description on `epon_hal_link_info_t` was corrected: it read
+    "EPON operational configuration", which describes neither of the two members it introduces.
+
+### Fixed
+
+- The `status_callback`, `alarm_callback` and `interface_status_callback` members of
+  `epon_hal_config_t` used the *trailing* comment marker `/**<` in *leading* position, so Doxygen
+  attached all three descriptions to the preceding `dpoe_supported` member and left the three
+  callbacks undocumented in the generated output. They now use the leading `/**` form.
+- Two comments identified a registered ONU by the name `OAM_REGISTERED`, which this interface does
+  not declare. Both now name the declared enumerators `EPON_ONU_STATUS_REGISTRATION` and
+  `EPON_ONU_INTF_STATUS_LINK_UP`.
+
+**Every change to `epon_hal.h` recorded under `Changed` and `Fixed` above is comment-only.** No
+declaration, signature, typedef, macro value, enumerator, struct member, preprocessor branch or
+include was altered, so the API surface is unchanged, the interface version stays at 1.0.0, and a
+vendor implementation built against 1.0.0 does not need re-qualification.
 
 ## 1.0.0 - 2026-01-23
 
 First tagged release, at tag
-[`v1.0.0`](https://github.com/rdkcentral/rdkb-halif-epon/releases/tag/v1.0.0). It publishes an
-interface only - this repository ships the public header and no implementation, build manifest or
-library.
+[`v1.0.0`](https://github.com/rdkcentral/rdkb-halif-epon/releases/tag/v1.0.0). The heading date,
+2026-01-23, is the author date of the commit that `v1.0.0` marks. The annotated tag object itself
+was created later, on 2026-03-31. Both are given because the two are more than two months apart, so
+a reader who needs one of them should not have to guess which one a bare date means.
+
+It publishes an interface only - this repository ships the public header and no implementation,
+build manifest or library.
 
 ### Added
 
@@ -89,8 +131,9 @@ library.
   alarms.
 - Generic HAL logging front end - the `hal_log_level_t` severity ladder, the `HAL_LOG` macro, and a
   `HAL_LOG_FUNCTION` backend an implementer may redefine before including the header.
-- Apache-2.0 `LICENSE`, `NOTICE` and `CONTRIBUTING.md`, and a `COPYING` symlink to `LICENSE`, for
-  project compliance
+- The Apache-2.0 `LICENSE` and its accompanying `NOTICE`, a `COPYING` symlink to `LICENSE`, and a
+  `CONTRIBUTING.md` directing a contributor to fork the repository, send a pull request and sign the
+  RDK Contributor License Agreement, for project compliance
   ([`7f26d88`](https://github.com/rdkcentral/rdkb-halif-epon/commit/7f26d8800917310eba9ba842c4baa16174244aec),
   [#3](https://github.com/rdkcentral/rdkb-halif-epon/pull/3)).
 - Contributor License Agreement check as the `.github/workflows/cla.yml` GitHub Actions workflow
