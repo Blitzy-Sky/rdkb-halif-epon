@@ -4,14 +4,14 @@
 
 | Date | Comment | Version |
 | --- | --- | --- |
-| 08/25/26 | First specification document for the EPON HAL. Covers the runtime execution requirements, the non-functional requirements, the complete public type surface and all fifteen declared functions. Describes release tag `v1.0.0` at interface version `1.0.0`. | 1.0.0 |
+| 2026-08-25 | First specification document for the EPON HAL. Covers the runtime execution requirements, the non-functional requirements, the complete public type surface and all fifteen declared functions. Describes release tag `v1.0.0` at interface version `1.0.0`. | 1.0.0 |
 
 Four version identities travel with this repository, and this document keeps
 them apart. Conflating them is the easiest way to mislead a caller, because only
 one of the four tells a caller what the compiled contract is:
 
-- **Document revision** - the `Version` column above, dated in `MM/DD/YY` by the
-  `Date` column, which records when this page was revised and is not a release
+- **Document revision** - the `Version` column above, dated in `YYYY-MM-DD` by
+  the `Date` column, which records when this page was revised and is not a release
   date. It moves when this page changes, and it says nothing about the
   interface.
 - **Interface version** - the contract a caller compiles and links against,
@@ -21,8 +21,8 @@ one of the four tells a caller what the compiled contract is:
 - **Release tag** - the point in this repository's history that a consumer
   checks out. The sole tag today is `v1.0.0`, an annotated tag. Two dates travel
   with it and they are more than two months apart, so this document names which
-  one it means every time it prints one: the commit the tag marks is dated **23
-  January 2026**, and the tag object itself was created on **31 March 2026**. A
+  one it means every time it prints one: the commit the tag marks is dated
+  **2026-01-23**, and the tag object itself was created on **2026-03-31**. A
   caller reproducing a build cares about the first; anyone tracking when the
   release was cut cares about the second.
 - **Generated-site version string** - whatever `git describe --tags` reports
