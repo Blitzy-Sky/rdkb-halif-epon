@@ -35,7 +35,7 @@ that carries these changes is tagged.
 
 ### Added
 
-- `docs/pages/halSpec.md` - the EPON HAL interface specification, covering the interface's
+- The EPON HAL interface specification page in `docs/pages/`, covering the interface's
   architecture, runtime execution requirements, non-functional requirements and complete API
   surface. This is the repository's first specification document.
 - `docs/generate_docs.sh` - entry point that builds the specification into browsable HTML with the
@@ -43,10 +43,10 @@ that carries these changes is tagged.
 - `docs/.gitignore` - excludes `build` (the generator clone), `output` (the generated HTML) and
   `node_modules` from version control, so a documentation build leaves nothing to commit.
 - Five symlinks in `docs/pages/`, so the repository-root governance and legal files render alongside
-  the specification in the generated documentation: `CHANGELOG.md` to `../../CHANGELOG.md`,
-  `CONTRIBUTING.md` to `../../CONTRIBUTING.md`, `COPYING.md` to `../../COPYING`, `LICENSE.md` to
-  `../../LICENSE` and `NOTICE.md` to `../../NOTICE`. No root file was copied or altered to create
-  them.
+  the specification in the generated documentation: a changelog link to `../../CHANGELOG.md`, a
+  contribution-guide link to `../../CONTRIBUTING.md`, a copying link to `../../COPYING`, a licence
+  link to `../../LICENSE` and a notice link to `../../NOTICE`. No root file was copied or altered
+  to create them.
 - `include/epon_hal.h` - a symlink to `../epon_hal.h`, which brings the header inside the
   documentation generator's input path so its inline documentation is extracted. The header itself
   does not move: `epon_hal.h` remains the published include path, and the symlink adds a second
@@ -55,8 +55,9 @@ that carries these changes is tagged.
 
 ### Changed
 
-- `README.md` is now a symlink to `docs/pages/halSpec.md`, so the interface specification is the
-  repository's landing page. It previously carried a two-line description of the repository.
+- The repository README is now a symlink to the specification page in `docs/pages/`, so the
+  interface specification is the repository's landing page. It previously carried a two-line
+  description of the repository.
 - The inline Doxygen documentation in `epon_hal.h` was expanded. Specifically:
   - All fifteen declared functions now carry a full caller contract: per-parameter direction,
     valid range, array length and buffer ownership; the pre-conditions the call imposes and the
@@ -132,12 +133,12 @@ build manifest or library.
 - Generic HAL logging front end - the `hal_log_level_t` severity ladder, the `HAL_LOG` macro, and a
   `HAL_LOG_FUNCTION` backend an implementer may redefine before including the header.
 - The Apache-2.0 `LICENSE` and its accompanying `NOTICE`, a `COPYING` symlink to `LICENSE`, and a
-  `CONTRIBUTING.md` directing a contributor to fork the repository, send a pull request and sign the
-  RDK Contributor License Agreement, for project compliance
+  contribution guide directing a contributor to fork the repository, send a pull request and sign
+  the RDK Contributor License Agreement, for project compliance
   ([`7f26d88`](https://github.com/rdkcentral/rdkb-halif-epon/commit/7f26d8800917310eba9ba842c4baa16174244aec),
   [#3](https://github.com/rdkcentral/rdkb-halif-epon/pull/3)).
 - Contributor License Agreement check as the `.github/workflows/cla.yml` GitHub Actions workflow
   ([`3b6f189`](https://github.com/rdkcentral/rdkb-halif-epon/commit/3b6f1899677d9f5eb7e6af98ddd6d078fff84aa8),
   [#1](https://github.com/rdkcentral/rdkb-halif-epon/pull/1)).
-- Repository bootstrap with an initial `README.md`
+- Repository bootstrap with an initial repository README
   ([`c99a9c4`](https://github.com/rdkcentral/rdkb-halif-epon/commit/c99a9c45e7c73ba0f726b2c44a9bc88006c42282)).

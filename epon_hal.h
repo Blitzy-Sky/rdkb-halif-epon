@@ -44,7 +44,7 @@
  * epon_hal_get_version() reports its outcome synchronously through an
  * epon_hal_return_t status code; there is no error callback, error queue or other
  * out-of-band error channel, which the repository specification states under
- * `Internal Error Handling` (`docs/pages/halSpec.md`).
+ * `Internal Error Handling` in the HAL specification.
  *
  * The interface declares no handle, instance pointer or context argument, so
  * initialization state is a property of the process rather than of an object the
@@ -68,7 +68,7 @@
  *          observed runtime behaviour.
  *
  * Behaviour stated in this header is derived from these declarations and from the
- * repository specification (`docs/pages/halSpec.md`). Where neither establishes a
+ * repository specification. Where neither establishes a
  * fact - whether a particular call may block, or which thread a callback arrives on -
  * that is stated as unspecified rather than filled in by inference from a signature.
  */
@@ -141,7 +141,7 @@ extern "C" {
  * state one: the repository specification's `Memory Model` topic directs a caller to
  * treat each fixed-size character buffer as zero-terminated and bounded by its
  * declared length, so the length is the limit even where a terminator is present
- * (`docs/pages/halSpec.md`).
+ * in the HAL specification.
  */
 #define EPON_HAL_MAC_ADDR_LEN 6              /*!< Length in bytes of every MAC address array in this interface - epon_llid_info_t::local_mac_address, epon_olt_info_t::mac_address and dpoe_cpe_mac_entry_t::mac_address. Six octets, in transmission order; this interface states no text formatting for them. */
 #define EPON_HAL_VENDOR_OUI_LEN 3            /*!< Length in bytes of a vendor OUI (Organizationally Unique Identifier) array - epon_onu_manufacturer_info_t::vendor_oui and epon_olt_info_t::vendor_oui. Three octets, being the first three of the corresponding MAC address space. */
@@ -177,7 +177,7 @@ extern "C" {
  * definition discards its input, no output is produced at all - which the repository
  * specification calls out under `Logging and debugging requirements` as the first
  * thing to check when log records are missing, ahead of the OAM log mask
- * (`docs/pages/halSpec.md`).
+ * in the HAL specification.
  *
  * @see epon_hal_set_oam_log_mask
  * @{
@@ -329,7 +329,7 @@ do { \
  * Every function except epon_hal_get_version() reports its outcome synchronously
  * through a value of this type. There is no error callback, error queue or other
  * out-of-band error channel, which the repository specification states under
- * `Internal Error Handling` (`docs/pages/halSpec.md`), so a caller learns of a failure
+ * `Internal Error Handling` in the HAL specification, so a caller learns of a failure
  * at the point of the call.
  *
  * @note Which subset of these codes a given function may return is per-function and is
@@ -459,7 +459,7 @@ typedef enum {
  *       notification about a power event, not a power-management control: this
  *       interface declares no function that configures or influences a power state, as
  *       the repository specification records under `Power Management Requirements`
- *       (`docs/pages/halSpec.md`). A caller may react to it, but has very little time
+ *       in the HAL specification. A caller may react to it, but has very little time
  *       in which to do so and this interface states no bound on that time.
  * @note EPON_VENDOR_ALARM_MAX is a bound rather than an alarm, one past the last valid
  *       identifier.
@@ -510,7 +510,7 @@ typedef enum {
  *          not state whether that pointer remains valid after the callback returns. A
  *          callback that needs to retain any of this data must copy it rather than
  *          store the pointer, which the repository specification states under `Memory
- *          Model` (`docs/pages/halSpec.md`).
+ *          Model` in the HAL specification.
  *
  * @see epon_alarm_type_t
  * @see epon_hal_alarm_t
@@ -908,7 +908,7 @@ typedef struct {
  *          on, whether two of them may run concurrently, or whether calling back into
  *          the HAL from inside one is permitted. The repository specification's
  *          `Threading Model` topic records that no threading model is specified and that
- *          a caller must not assume one (`docs/pages/halSpec.md`), so a callback body
+ *          a caller must not assume one in the HAL specification, so a callback body
  *          should do as little as possible - copy what it needs and hand off - rather
  *          than assume it may block or re-enter.
  *
@@ -1007,7 +1007,7 @@ typedef struct {
  *   For the other fourteen functions this interface does not specify whether a call may
  *   block, and a caller must not assume either behaviour; the repository specification
  *   records the same conclusion under `Blocking calls`
- *   (`docs/pages/halSpec.md`). Several of them plainly involve hardware transactions, so
+ *   in the HAL specification. Several of them plainly involve hardware transactions, so
  *   a caller that cannot tolerate an unbounded wait imposes its own bound.
  *
  * - **Thread safety.** This interface does not specify a threading model, and a caller

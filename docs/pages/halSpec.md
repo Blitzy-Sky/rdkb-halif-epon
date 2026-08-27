@@ -31,8 +31,8 @@ one of the four tells a caller what the compiled contract is:
   **is not a version**: it identifies a build of this repository at an untagged
   commit, not a release of the interface.
 
-Derived from the repository-root `CHANGELOG.md`, this repository's tag history,
-and the version macros in [`epon_hal.h`](../../epon_hal.h) (lines 41-45).
+Derived from the repository-root changelog, this repository's tag history, and
+the version macros in `epon_hal.h` (lines 41-45).
 
 ## Acronyms
 
@@ -89,16 +89,16 @@ plus one `DPoE` call for the `CPE` `MAC` table.
 **No dedicated middleware service owns this interface.** Most `RDK-B` `HAL`s are
 driven by a middleware service that must be stopped before the `HAL` can be
 exercised directly; EPON is one of the exceptions: the superproject inventory
-records it as having no service dependency at `README.md` lines 102-103, which
-is also why it does not appear in that document's stop-the-owning-service table
-at lines 90-100. A caller - production middleware or a test harness - therefore
-links the interface and drives it directly. The architecture chain above has no
-service tier for that reason, and a reader should not look for one.
+records it as having no service dependency at lines 102-103 of that README, which
+is also why it does not appear in its stop-the-owning-service table at lines
+90-100. A caller - production middleware or a test harness - therefore links the
+interface and drives it directly. The architecture chain above has no service
+tier for that reason, and a reader should not look for one.
 
 This repository holds the interface definition only. It ships the public header
 and no implementation, build manifest or library; each vendor supplies its own
 shared object behind the same declarations, which is what makes the contract
-testable in isolation (the superproject `README.md`, lines 5-8).
+testable in isolation (the superproject README, lines 5-8).
 
 Two properties of the interface shape everything below, and both are worth
 stating before a reader reaches the detail. It is a **single global instance**:
@@ -108,8 +108,8 @@ of the process rather than of an object the caller holds. And it is
 its result as a return value, while status changes, alarms and interface
 transitions arrive through three callbacks supplied at initialization.
 
-Derived from [`epon_hal.h`](../../epon_hal.h) and the EPON entry in the
-superproject `README.md` at line 26, under its `WAN and access technologies`
+Derived from `epon_hal.h` and the EPON entry in the
+superproject README at line 26, under its `WAN and access technologies`
 heading.
 
 ## Optional Components
@@ -140,8 +140,9 @@ the header and they are not equivalent, so the distinction matters:
   `DPoE` is not supported (line 1431). This is the mechanism a caller should
   use.
 - **At compile time, documented intent only.** The header's `DPoE` section
-  carries the instruction to "Enable with `-DEPON_HAL_DPOE_SUPPORT` at compile
-  time" (line 1386). **No conditional compilation is actually present.** The
+  carries the instruction "Enable with -DEPON_HAL_DPOE_SUPPORT at compile time"
+  (line 1386), quoted here as the header words it. **No conditional compilation
+  is actually present.** The
   only
   preprocessor conditionals in the header are its include guard, its
   `__cplusplus` guards and the `HAL_LOG_FUNCTION` default; there is no `#ifdef`
@@ -150,7 +151,7 @@ the header and they are not equivalent, so the distinction matters:
   is left undefined. The flag is recorded here as the header's stated intent
   rather than as observable behaviour.
 
-Derived from [`epon_hal.h`](../../epon_hal.h), lines 230-240, 519-521 and
+Derived from `epon_hal.h`, lines 230-240, 519-521 and
 1384-1490.
 
 ## Component Runtime Execution Requirements
@@ -227,7 +228,7 @@ running before `epon_hal_init` is called, beyond the optical hardware being
 present and provisioned for EPON; a caller should not infer a startup ordering
 that the interface does not state.
 
-Derived from [`epon_hal.h`](../../epon_hal.h), lines 519-522, 563-607 (the version
+Derived from `epon_hal.h`, lines 519-522, 563-607 (the version
 function and its ordering note), 609-729 and 1065-1117.
 
 ### Threading Model
@@ -253,7 +254,7 @@ implementation terminates or is deinitialized. That is a vendor obligation,
 stated here because it is the contract a caller relies on; it is **not** a
 guarantee this interface definition makes on any vendor's behalf.
 
-Derived from [`epon_hal.h`](../../epon_hal.h) - specifically from the
+Derived from `epon_hal.h` - specifically from the
 thread-safety statement each of the fifteen declarations carries, every one of
 which records the property as unspecified and directs a caller to serialise
 access. Three declarations narrow that further where a concurrency hazard is
@@ -282,7 +283,7 @@ from the `OLT` (lines 695-696) and so has effects well outside the calling
 process. A caller must not assume that concurrent use from separate processes is
 safe.
 
-Derived from [`epon_hal.h`](../../epon_hal.h), the fifteen declarations at lines
+Derived from `epon_hal.h`, the fifteen declarations at lines
 607-1490.
 
 ### Memory Model
@@ -355,7 +356,7 @@ other two callbacks take their argument **by value** (lines 526 and 560), which
 the declarations do establish, so no ownership or lifetime question arises for
 them.
 
-Derived from [`epon_hal.h`](../../epon_hal.h), lines 50-60, 293-330, 407-411,
+Derived from `epon_hal.h`, lines 50-60, 293-330, 407-411,
 426-427, 476-479, 492-521, 546-548, 695-696, 854-905 and 1410-1490.
 
 ### Power Management Requirements
@@ -372,7 +373,7 @@ not a control the caller uses to manage power. A caller may use it to react to
 impending loss of power; it cannot use this interface to influence a power
 state.
 
-Derived from [`epon_hal.h`](../../epon_hal.h), line 232, and from the absence of
+Derived from `epon_hal.h`, line 232, and from the absence of
 any power-management function across the fifteen declarations.
 
 ### Asynchronous Notification Model
@@ -422,8 +423,9 @@ initialization, a caller that receives it has no partial-registration state to
 unwind: initialization has failed.
 
 By the convention this corpus uses, asynchronous entry points are marked in the
-generated documentation with the `@execution callback` token, and a reader
-tracing notification behaviour through the generated site should look for it.
+generated documentation with an `Execution: callback` paragraph, produced by the
+generator's `execution` alias, and a reader tracing notification behaviour
+through the generated site should look for it.
 
 **What is not specified.** Two properties a caller would reasonably want are
 absent from this interface definition and must not be assumed: which thread each
@@ -433,7 +435,7 @@ whether a callback may block. The conservative reading - return quickly, copy
 what is needed, and synchronise anything shared with the caller's own threads -
 is the only one this interface supports.
 
-Derived from [`epon_hal.h`](../../epon_hal.h), lines 65, 160, 178-193, 201-204,
+Derived from `epon_hal.h`, lines 65, 160, 178-193, 201-204,
 258-266, 519-561 and 617-630.
 
 ### Blocking calls
@@ -460,7 +462,7 @@ wherever a hardware transaction can fail by not responding. That is a vendor
 obligation stated for the caller's benefit; it is not a guarantee this interface
 definition makes.
 
-Derived from [`epon_hal.h`](../../epon_hal.h), line 630, and from the blocking
+Derived from `epon_hal.h`, line 630, and from the blocking
 statement each of the remaining fourteen declarations carries, every one of
 which records the property as unspecified.
 
@@ -512,7 +514,7 @@ return value rather than allowing them to escape. For system-level errors it
 should also log the detail needed to investigate, as described under `Logging
 and debugging requirements`.
 
-Derived from [`epon_hal.h`](../../epon_hal.h), lines 151-164, 569, 624-630,
+Derived from `epon_hal.h`, lines 151-164, 569, 624-630,
 740-743, 800-804, 858-861, 918-921, 975-978, 1020-1023, 1073-1076, 1127-1130,
 1181-1184, 1235-1239, 1309-1312 and 1427-1431.
 
@@ -536,7 +538,7 @@ What the interface does establish is that the configuration passed to
 `epon_hal_init` must be called again with a configuration before any other
 function is used (lines 687-688).
 
-Derived from [`epon_hal.h`](../../epon_hal.h), lines 682-729 and 1065-1117.
+Derived from `epon_hal.h`, lines 682-729 and 1065-1117.
 
 ## Non functional requirements
 
@@ -587,7 +589,7 @@ The only way to produce no output is an explicit no-op override - defining
 deliberate choice an implementer makes, not the state a build falls into by
 saying nothing.
 
-**`OAM` message logging is separately controlled,** and three constraints on it
+`OAM` **message logging is separately controlled,** and three constraints on it
 are stated by the interface rather than left to an implementation:
 
 - `epon_hal_set_oam_log_mask` (line 1381) selects which `OAM` message types are
@@ -619,7 +621,7 @@ interface carries no password and no key, but it carries two classes of value
 that must be handled as sensitive, and both reach the caller through ordinary
 getters:
 
-- **`MAC` addresses.** `epon_olt_info_t.mac_address` (line 494) is the `OLT`'s
+- `MAC` addresses. `epon_olt_info_t.mac_address` (line 494) is the `OLT`'s
   `OAM` address; `epon_llid_info_t.local_mac_address` (line 392) is the local
   address bound to each `LLID`; and `dpoe_cpe_mac_entry_t.mac_address` (line
   1402) is the address of every `CPE` behind the `ONU`, static and learned
@@ -664,7 +666,7 @@ mechanically.
   `dpoe_cpe_mac_table_t.cpe_list` both hold `MAC` addresses and are freed by the
   caller, so overwrite the entries and then call `free()` rather than returning
   the memory to the allocator with the addresses still in it.
-- **`OAM` tracing is the largest exposure here, and enabling it is a decision
+- `OAM` **tracing is the largest exposure here, and enabling it is a decision
   about disclosure.** `epon_hal_set_oam_log_mask` writes matching `OAM`
   exchanges with the `OLT` to the log at `HAL_LOG_LEVEL_OAM`, and those
   exchanges carry addresses and identity by their nature. `EPON_OAM_ALL` on a
@@ -683,7 +685,7 @@ mechanically.
   compliance by inspection or by contract and must treat the absence of these
   values from a vendor log as unverified until it has done so.
 
-Derived from [`epon_hal.h`](../../epon_hal.h), lines 67-146, 268-286, 392,
+Derived from `epon_hal.h`, lines 67-146, 268-286, 392,
 407-411, 426-434, 494, 1297-1381 and 1401-1415.
 
 ### Memory and performance requirements
@@ -704,7 +706,7 @@ this interface performs are those two arrays, both sized from counts the same
 structure reports, so a caller can bound its own memory use from the `LLID` and
 `CPE` counts the device presents.
 
-Derived from [`epon_hal.h`](../../epon_hal.h), lines 407-411 and 1410-1415, and
+Derived from `epon_hal.h`, lines 407-411 and 1410-1415, and
 from the absence of any stated footprint or performance limit in this
 repository.
 
@@ -724,10 +726,10 @@ interface, with warnings enabled by default rather than suppressed.
 
 **This interface cannot be exercised on the reference platforms, and every
 statement here is bounded by that.** EPON is not available on the HUB6 or XER10
-reference platforms (the superproject `README.md`, lines 102-103), so it
+reference platforms (the superproject README, lines 102-103), so it
 requires other hardware. Every behavioural statement in this document is
 therefore **derived from the interface definition** in
-[`epon_hal.h`](../../epon_hal.h) and has not been confirmed by running an
+`epon_hal.h` and has not been confirmed by running an
 implementation. Where the interface definition does not establish a behaviour,
 this document says so explicitly rather than supplying an answer that would read
 as observed. A reader should treat the cited lines as the evidence for each
@@ -738,10 +740,10 @@ implementation in front of them.
 document, above and below, closes with a `Derived from` note naming the artefacts
 its own content came from, rather than leaving that to a single statement here.
 The complete set those notes name is `epon_hal.h` at the repository root for
-every interface fact; the repository-root `CHANGELOG.md` and this repository's
-tag history for `Version History`; the superproject `README.md` for ownership,
-platform availability and the position of EPON in the RDK-B stack; the
-repository-root `CONTRIBUTING.md` for the review route; and `LICENSE` and
+every interface fact; the repository-root changelog and this repository's tag
+history for `Version History`; the superproject README for ownership, platform
+availability and the position of EPON in the RDK-B stack; the repository-root
+contribution guide for the review route; and `LICENSE` and
 `NOTICE` for `Licensing`. **Any change to a file this document cites obliges a
 review of the topics that cite it** - which makes staleness detectable from a
 diff rather than from a review-by date. Renaming or removing a declaration is the
@@ -750,39 +752,42 @@ below names every declared function by exact identifier.
 
 The obligation needs an addressee. This repository publishes no `CODEOWNERS`
 file, so the responsible reviewer is the maintainer group that the
-repository-root `CONTRIBUTING.md` directs a contribution to: a change is offered
+repository-root contribution guide directs a contribution to: a change is offered
 by forking this repository on GitHub and sending a pull request, and the RDK
 Contributor License Agreement must be signed before it is accepted. A reviewer
 acting on this trigger raises the documentation change through that same route.
 
-Derived from the repository-root `CONTRIBUTING.md` and the superproject
-`README.md`, lines 102-103.
+Derived from the repository-root contribution guide and the superproject README,
+lines 102-103.
 
 ### Licensing
 
 The EPON `HAL` interface definition is licensed under the Apache License,
-Version 2.0. The full licence text is in [`LICENSE`](../../LICENSE) at the
-repository root, reachable also as [`COPYING`](../../COPYING); the attribution
-notice is in [`NOTICE`](../../NOTICE), which records the component as Copyright
+Version 2.0. The full licence text is the repository-root `LICENSE` file, rendered
+with this specification as [LICENSE.md](LICENSE.md) and reachable also as
+[COPYING.md](COPYING.md); the attribution notice is the repository-root `NOTICE`
+file, rendered as [NOTICE.md](NOTICE.md), which records the component as Copyright
 (c) 2025 RDK Management and licensed under the same terms. The interface header
-[`epon_hal.h`](../../epon_hal.h) carries the Apache-2.0 header itself, at lines
+`epon_hal.h` carries the Apache-2.0 header itself, at lines
 1-18, as does `docs/generate_docs.sh`. The Markdown documents in this
 repository, this page included, carry no per-file licence header; the root
 `LICENSE` and `NOTICE` govern them.
 
 These files are also linked into this documentation directory so that they
 render with this specification in the generated documentation. `docs/pages/`
-holds this page and five symlinks, and nothing else: `LICENSE.md` to the root
-`LICENSE`, `COPYING.md` to the root `COPYING`, `NOTICE.md` to the root `NOTICE`,
-`CHANGELOG.md` to the root `CHANGELOG.md`, and `CONTRIBUTING.md` to the root
-`CONTRIBUTING.md`. None of the five is a copy, so there is no second version of
-a legal file to fall out of step with the original.
+holds this page and five symlinks, and nothing else: [LICENSE.md](LICENSE.md) to
+the root `LICENSE`, [COPYING.md](COPYING.md) to the root `COPYING`,
+[NOTICE.md](NOTICE.md) to the root `NOTICE`, a changelog link to
+`../../CHANGELOG.md`, and a contribution-guide link to `../../CONTRIBUTING.md`.
+None of the five is a copy, so there is no second version of a legal file to fall
+out of step with the original.
 
 An implementation of this interface is expected to be released under the Apache
 License, Version 2.0.
 
-Derived from [`LICENSE`](../../LICENSE), [`NOTICE`](../../NOTICE) and
-[`epon_hal.h`](../../epon_hal.h), lines 1-18.
+Derived from the repository-root `LICENSE` and `NOTICE`, rendered here as
+[LICENSE.md](LICENSE.md) and [NOTICE.md](NOTICE.md), and from `epon_hal.h`,
+lines 1-18.
 
 ### Build Requirements
 
@@ -795,8 +800,8 @@ repository does not declare would be a fiction a caller could act on.
 
 What is established is the shape of the dependency rather than its name. An
 `RDK-B` `HAL` repository holds the interface definition only, and each vendor
-ships its own shared object behind it (the superproject `README.md`, lines 5-8).
-So a caller compiles against [`epon_hal.h`](../../epon_hal.h) and links against
+ships its own shared object behind it (the superproject README, lines 5-8).
+So a caller compiles against `epon_hal.h` and links against
 whatever object the vendor supplies for the platform, with the name, the recipe
 and the toolchain all coming from that vendor's delivery rather than from this
 repository.
@@ -810,8 +815,8 @@ The header depends only on the C standard library - `stdint.h`, `stdbool.h` and
 `stdio.h`, at lines 23-25 - and carries `extern "C"` guards so it may be
 included from C++ (lines 27-29 and 1492-1494).
 
-Derived from [`epon_hal.h`](../../epon_hal.h), lines 20-29, and the superproject
-`README.md`, lines 5-8. The absence of a build manifest was verified across this
+Derived from `epon_hal.h`, lines 20-29, and the superproject
+README, lines 5-8. The absence of a build manifest was verified across this
 repository rather than assumed.
 
 ### Variability Management
@@ -852,8 +857,9 @@ not equally real:
   default that appends to `/rdklogs/logs/EPONMANAGERLog.txt.0`. This is the one
   supported build-time customisation point in the interface.
 - `EPON_HAL_DPOE_SUPPORT` is **documented but not implemented as a
-  conditional**. The header instructs an implementer to "Enable with
-  `-DEPON_HAL_DPOE_SUPPORT` at compile time" (line 1386), but no `#ifdef` on it
+  conditional**. The header instructs an implementer, in its own words, to
+  "Enable with -DEPON_HAL_DPOE_SUPPORT at compile time" (line 1386), but no
+  `#ifdef` on it
   exists anywhere in the file, so the `DPoE` declarations compile
   unconditionally. It is recorded here as stated intent; the mechanism that
   actually varies `DPoE` behaviour is the runtime pair described under `Optional
@@ -863,7 +869,7 @@ Beyond these two, this interface specifies no compile-time variability. There is
 no feature-flag family that adds or removes declarations, so the compiled
 surface is the same fifteen functions on every platform.
 
-Derived from [`epon_hal.h`](../../epon_hal.h), lines 31-45, 135-144, 563-607 and
+Derived from `epon_hal.h`, lines 31-45, 135-144, 563-607 and
 1384-1386.
 
 ### Platform or Product Customization
@@ -871,7 +877,7 @@ Derived from [`epon_hal.h`](../../epon_hal.h), lines 31-45, 135-144, 563-607 and
 Three points of variation exist between platforms and products, and a caller
 should discover each at runtime rather than assuming it.
 
-**`DPoE` support is the product-level option.** A platform that provisions EPON
+`DPoE` **support is the product-level option.** A platform that provisions EPON
 through DOCSIS supports it; one that does not omits it. The caller declares its
 expectation through `epon_hal_config_t.dpoe_supported` (line 521) at
 initialization, and `dpoe_hal_get_cpe_mac_table` reports absence with
@@ -911,23 +917,23 @@ both are reported by the device at runtime through
 (line 1411), and a caller must read them rather than assuming a platform
 maximum.
 
-Derived from [`epon_hal.h`](../../epon_hal.h), lines 57-58, 407-408, 444-478,
+Derived from `epon_hal.h`, lines 57-58, 407-408, 444-478,
 519-521, 441-560, 1168-1223, 1410-1411 and 1431.
 
 ## Interface API Documentation
 
 The authoritative per-function reference is the inline documentation in
-[`epon_hal.h`](../../epon_hal.h), which the documentation generator extracts
+`epon_hal.h`, which the documentation generator extracts
 into this site. Every declaration there carries its purpose, its parameter
 directions and constraints, and the status codes it can return. This block gives
 the concepts a caller needs in order to read that reference correctly, the
 public type surface, and the complete index of declared functions.
 
-To use this interface from a component, include [`epon_hal.h`](../../epon_hal.h)
+To use this interface from a component, include `epon_hal.h`
 and link against the shared object the platform vendor supplies - see `Build
-Requirements` above for why no library name is stated here. The header is also
-reachable at [`include/epon_hal.h`](../../include/epon_hal.h), which is a
-symlink to the same file; the repository-root path is the published include
+Requirements` above for why no library name is stated here. The same file is also
+reachable under this repository's `include/` directory, which holds a symlink to
+it rather than a second header; the repository-root path is the published include
 path.
 
 ### Theory of operation and key concepts
@@ -970,7 +976,7 @@ becomes available once it has completed.
 
 #### Method Sequencing
 
-- **`epon_hal_init` first, always.** Every function except the two noted under
+- `epon_hal_init` **first, always.** Every function except the two noted under
   `Internal Error Handling` documents `EPON_HAL_ERROR_NOT_INITIALIZED`, so
   calling before initialization is a defined failure rather than undefined
   behaviour.
@@ -978,25 +984,25 @@ becomes available once it has completed.
   have no ordering constraint between them. What they can return depends on
   device state rather than on call order, which `State-Dependent Behavior` below
   sets out.
-- **`epon_hal_clear_stats` resets what the statistics getters read.** It zeroes
+- `epon_hal_clear_stats` **resets what the statistics getters read.** It zeroes
   the link statistics counters - frame counts, byte counts, `FEC` error counters
   and `MAC` reset counters - and **optical power measurements are not affected**
   (line 973), because those are instantaneous measurements rather than counters.
   A caller computing a rate across an interval must not clear counters inside
   that interval.
-- **`epon_hal_reset_onu` is disruptive but does not require re-initialization.**
+- `epon_hal_reset_onu` **is disruptive but does not require re-initialization.**
   It deregisters the `ONU`, performs a soft reset and re-registers through the
   `MPCP` discovery and registration procedure (lines 1016-1018), causing
   **temporary** service disruption (line 1025). The interface stays initialized
   across it, so the caller continues using it and should expect status
   notifications as registration proceeds.
-- **`epon_hal_factory_reset` is disruptive and *does* require
+- `epon_hal_factory_reset` **is disruptive and *does* require
   re-initialization.** It clears all custom settings, statistics and operational
   parameters, causing service disruption and loss of all configuration, and
   `epon_hal_init` must be called again afterwards (lines 1068-1079). This is the
   one sequencing difference between the two reset operations, and confusing them
   leaves a caller issuing calls against a deinitialized interface.
-- **`epon_hal_deinit` last.** After it returns, `epon_hal_init` must be called
+- `epon_hal_deinit` last. After it returns, `epon_hal_init` must be called
   again before any other function is used (lines 687-688).
 
 #### State-Dependent Behavior
@@ -1025,12 +1031,12 @@ three of these are documented rather than inferred.
   `epon_hal_get_transceiver_stats` documents `EPON_HAL_ERROR_NOT_SUPPORTED`
   (line 804), so optical measurements are a capability a caller must probe
   rather than assume.
-- **`DPoE` calls report absence rather than failing obscurely.**
+- `DPoE` **calls report absence rather than failing obscurely.**
   `dpoe_hal_get_cpe_mac_table` returns `EPON_HAL_ERROR_NOT_SUPPORTED` where
   `DPoE` is not supported (line 1431).
 
 **How "registered" is named.** Two places in
-[`epon_hal.h`](../../epon_hal.h) - the `epon_olt_info_t` description (lines
+`epon_hal.h` - the `epon_olt_info_t` description (lines
 485-488) and the `@note` on `epon_hal_get_olt_info` (lines 1241-1243) - describe
 `OLT` information as available after successful `ONU` registration, and both
 identify that condition by its declared enumerators:
@@ -1042,13 +1048,13 @@ following an older revision of the header, or vendor material derived from one,
 may meet the informal names `OAM_REGISTERED` and `LINK_UP` instead; neither is a
 declared enumerator and neither should be coded against.
 
-Derived from [`epon_hal.h`](../../epon_hal.h), lines 178-193, 359-365, 386-387,
+Derived from `epon_hal.h`, lines 178-193, 359-365, 386-387,
 485-488, 519-561, 609-729, 804, 968-1117, 1186-1187, 1229-1243 and 1431.
 
 ### Data Structures and Defines
 
 Every type below is public and a caller must construct or interpret it. Line
-numbers are declaration sites in [`epon_hal.h`](../../epon_hal.h).
+numbers are declaration sites in `epon_hal.h`.
 
 **Callback members.** All three are function-pointer members of
 `epon_hal_config_t` and are installed by `epon_hal_init`; this interface
@@ -1084,15 +1090,15 @@ above.
 | --- | --- | --- |
 | `epon_onu_interface_info_t` | 201 | One interface: its name and its link status. |
 | `epon_alarm_info_t` | 258 | One alarm event: the type discriminator, an anonymous union holding either the standard or vendor alarm, the affected `LLID`, and whether the alarm is being raised or cleared. |
-| `epon_hal_link_stats_t` \* | 293 | Link counters. Nine fields carry explicit `TR-181` mappings under `Device.Optical.Interface.{i}.Stats`; the remainder, including the `FEC` counters, are documented as EPON extensions. |
-| `epon_hal_transceiver_stats_t` \* | 319 | Optical measurements: transmit and receive power with their thresholds, all `TR-181`-mapped, plus laser bias current, temperature and supply voltage as vendor extensions. |
+| `epon_hal_link_stats_t *` | 293 | Link counters. Nine fields carry explicit `TR-181` mappings under `Device.Optical.Interface.{i}.Stats`; the remainder, including the `FEC` counters, are documented as EPON extensions. |
+| `epon_hal_transceiver_stats_t *` | 319 | Optical measurements: transmit and receive power with their thresholds, all `TR-181`-mapped, plus laser bias current, temperature and supply voltage as vendor extensions. |
 | `epon_llid_info_t` | 386 | One `LLID`: its value, mode, state, forwarding state, whether encryption is enabled, and its local `MAC` address. |
 | `epon_llid_list_t` | 407 | The `LLID` table: maximum supported, current count, and a pointer to an array **the implementation allocates and the caller must free**. |
-| `epon_onu_manufacturer_info_t` \* | 426 | `ONU` identity - manufacturer, model number, hardware and software versions, serial number and vendor `OUI` - with the first five mapped to `TR-181` `Device.DeviceInfo` parameters. |
+| `epon_onu_manufacturer_info_t *` | 426 | `ONU` identity - manufacturer, model number, hardware and software versions, serial number and vendor `OUI` - with the first five mapped to `TR-181` `Device.DeviceInfo` parameters. |
 | `epon_hal_link_info_t` | 463 | Negotiated link properties: the operational mode as a **string**, and the encryption mode as an enumeration. |
 | `epon_interface_list_t` | 476 | The interface table: a count plus a **fixed-capacity** array of `EPON_HAL_MAX_INTERFACES` entries. Nothing to free. |
-| `epon_olt_info_t` \* | 492 | `OLT` identity learned during registration: its `OAM` `MAC` address from `MPCP` GATE messages, and its vendor `OUI` from the `OAM` Information message. |
-| `epon_hal_config_t` \* | 519 | The initialization contract: the `DPoE` expectation flag and the three callback members. |
+| `epon_olt_info_t *` | 492 | `OLT` identity learned during registration: its `OAM` `MAC` address from `MPCP` GATE messages, and its vendor `OUI` from the `OAM` Information message. |
+| `epon_hal_config_t *` | 519 | The initialization contract: the `DPoE` expectation flag and the three callback members. |
 | `dpoe_cpe_mac_entry_t` | 1401 | One `CPE` `MAC` table row: address, static or dynamic type, and age in seconds, which is zero for a static entry. |
 | `dpoe_cpe_mac_table_t` | 1410 | The `CPE` `MAC` table: maximum supported, static and dynamic counts, and a pointer to an array **the implementation allocates and the caller must free**. |
 
@@ -1110,7 +1116,7 @@ above.
 All fifteen declared functions, by exact identifier, grouped by function.
 Per-function detail - parameter directions and constraints, and the status codes
 each can return - is in the inline documentation at the cited line in
-[`epon_hal.h`](../../epon_hal.h).
+[epon_hal.h](../../epon_hal.h).
 
 **Lifecycle** - two functions. Every other function in this interface depends on
 these.
@@ -1215,7 +1221,7 @@ optional, and its place in the sequence is any point after initialization on a
 `DPoE`-capable platform, with the same caller-frees obligation as
 `epon_hal_get_llid_info`.
 
-Derived from [`epon_hal.h`](../../epon_hal.h): every participant exchange above
+Derived from `epon_hal.h`: every participant exchange above
 names one of the fifteen declarations at lines 607-1490, and the notification
 arrows name the three callback members declared at lines 526, 550 and 560.
 
@@ -1344,7 +1350,7 @@ and must not maintain a local model of `LLID` progression in the expectation tha
 every intermediate value will be seen. The reliable way to establish the current
 value is to call `epon_hal_get_llid_info` again.
 
-**`EPON_LLID_STATE_FAILED` has no specified exit.** Nothing in this header states
+`EPON_LLID_STATE_FAILED` **has no specified exit.** Nothing in this header states
 how an `LLID` leaves that value: there is no per-`LLID` retry or recovery call,
 and no parameter reporting that a recovery is in progress. The interface-wide
 operations remain available to a caller - `epon_hal_reset_onu` triggers `MPCP`
@@ -1372,5 +1378,5 @@ the two values `EPON_ONU_INTF_STATUS_LINK_DOWN` and
 `interface_status_callback`, and the interface constrains neither their timing
 nor their ordering.
 
-Derived from [`epon_hal.h`](../../epon_hal.h), lines 178-193, 344-365, 389,
+Derived from `epon_hal.h`, lines 178-193, 344-365, 389,
 526, 550, 560, 569, 682-729, 1013-1117 and 1186-1187.
