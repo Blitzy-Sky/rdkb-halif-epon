@@ -37,11 +37,10 @@ The diagram below describes a high-level software architecture of the EPON HAL
 module stack.
 
 ```mermaid
-flowchart TD;
-    Caller["RDK-B Middleware"] <-->
-    EponHAL["EPON HAL (epon_hal.h)"] <-->
-    Vendor["Vendor Software"] <-->
-    Onu["EPON ONU hardware"]
+flowchart TD
+    Caller["RDK-B Middleware"] <--> HAL["EPON HAL - epon_hal.h"]
+    HAL <--> Vendor["Vendor Software"]
+    Vendor <--> Hardware["EPON ONU hardware"]
 ```
 
 The EPON `HAL` is the interface definition between the RDK-B Middleware, the
