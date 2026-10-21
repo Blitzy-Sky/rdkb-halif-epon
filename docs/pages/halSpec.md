@@ -85,9 +85,9 @@ The interface has an explicit lifecycle, and its ordering is a requirement:
   installs the three callbacks, configures `DPoE` support where requested, and
   initializes the interface mapping.
 - `epon_hal_deinit()` unregisters the callbacks, releases the implementation's
-  allocations, performs hardware cleanup and deregisters the `ONU` from the
-  `OLT`. `epon_hal_init()` must be called again before any other function is
-  used.
+  internal allocations, performs hardware cleanup and deregisters the `ONU` from
+  the `OLT`. `epon_hal_init()` must be called again before any other function
+  is used.
 - `epon_hal_factory_reset()` also ends the initialized lifetime: after a
   successful factory reset, `epon_hal_init()` must be called again.
 
@@ -152,8 +152,9 @@ implementation, transfer ownership to the caller.
 #### Module Responsibilities
 
 - Allocate `llid_list` and `cpe_list` for the caller to free.
-- Manage internal memory without leaks, and release everything the
-  implementation allocated when `epon_hal_deinit()` is called.
+- Manage internal memory without leaks, and release the implementation's
+  internal allocations when `epon_hal_deinit()` is called. Teardown does not
+  release `llid_list` or `cpe_list` once they are returned to the caller.
 
 ### Power Management Requirements
 
@@ -291,12 +292,13 @@ handled in hardware and cannot be logged. Where records are missing, the
 backend that discards its input produces no output at all.
 
 **Sensitive data.** Implementations must not log credentials, secrets, security-sensitive information, or other sensitive data.
-The same rule covers values that identify a subscriber or a subscriber's
-equipment. It applies at every severity, to every backend, and to crash reports,
-diagnostic bundles and telemetry. Where a diagnostic must say what it acted on,
-it records the operation and its outcome, not the sensitive value. `EPON_OAM_ALL`
-produces sustained log volume and writes protocol exchanges that carry device
-identity, so it is enabled only for diagnosis and narrowed afterwards.
+The rule covers values identifying a subscriber or a subscriber's equipment and
+applies to every severity, backend, crash report, diagnostic bundle and
+telemetry record, with no exception for diagnosis or a wider `OAM` mask: a
+diagnostic records the operation and outcome, not the sensitive value. `OAM`
+exchanges carry device identity, which the implementation suppresses or redacts
+before any `OAM` record reaches the backend. `EPON_OAM_ALL` still produces
+sustained log volume while the `OAM` session is up, so it is narrowed after use.
 
 ### Memory and performance requirements
 
@@ -318,8 +320,7 @@ arrays to the caller. An implementation is compiled with warnings enabled and
 with zero warnings.
 
 EPON is not available on the RDK-B reference platforms, so the behaviour in this
-document comes from the interface definition and is to be confirmed against the
-vendor implementation in use.
+document is to be confirmed against the vendor implementation in use.
 
 Any change to a file listed under `Source References` requires a review of this
 document. Changes are offered by forking the repository on GitHub and sending a
@@ -429,7 +430,8 @@ available once registration completes.
 - **Usage.** Request and response structures are plain caller-allocated data
   with no lifecycle of their own, handled as `Memory Model` sets out.
 - **Destruction.** The initialized state ends as `Initialization and Startup`
-  sets out. The caller frees `llid_list` and `cpe_list` separately.
+  sets out. Ownership of the arrays a getter returns is given under
+  `Memory Model`.
 - **Unique identifiers.** An `LLID` is identified by
   `epon_llid_info_t.llid_value`, and `EPON_LLID_NOT_APPLICABLE` (`0xFFFF`) marks
   an alarm as device-wide. An interface is identified by the `name` field of
