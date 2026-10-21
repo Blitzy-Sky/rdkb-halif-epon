@@ -281,7 +281,7 @@ default backend appends each record, in the form
 Where syslog is available it is the preferred destination for a system-level
 component.
 
-**`OAM` message logging.** `epon_hal_set_oam_log_mask()` selects which `OAM`
+**Logging of `OAM` messages.** `epon_hal_set_oam_log_mask()` selects which `OAM`
 message types are logged at `HAL_LOG_LEVEL_OAM`, using `epon_oam_log_type_t`
 flags combined with a bitwise OR. `EPON_OAM_ALL` enables every type and a mask
 of zero disables `OAM` logging. The mask controls logging only: every `OAM`
@@ -384,7 +384,7 @@ The compiled surface is the same fifteen functions on every platform.
 Platforms and products vary in the following ways, and a caller discovers each
 at runtime:
 
-- **`DPoE` support** is the product-level option described under
+- **Support for `DPoE`** is the product-level option described under
   `Optional Components`.
 - **The logging backend** is the platform-level option, selected through
   `HAL_LOG_FUNCTION`.
@@ -395,10 +395,10 @@ at runtime:
   `EPON_ENCRYPTION_MODE_AES_128` for `AES`-128 as specified by IEEE 802.3ah,
   `EPON_ENCRYPTION_MODE_TRIPLE_CHURNING`, or `EPON_ENCRYPTION_MODE_AES_256`, an
   extension beyond IEEE 802.3ah.
-- **`WAN` interfaces** vary in number and name. `epon_hal_get_interface_list()`
+- **The `WAN` interfaces** vary in number and name. `epon_hal_get_interface_list()`
   enumerates up to `EPON_HAL_MAX_INTERFACES` of them, each identified by name,
   such as `veip0` or `veip1`.
-- **`LLID` and `CPE` table capacity** is reported by the device in
+- **The `LLID` and `CPE` table capacity** is reported by the device in
   `epon_llid_list_t.max_llid_count` and `dpoe_cpe_mac_table_t.max_cpe`, which a
   caller reads rather than assuming a platform maximum.
 
@@ -655,7 +655,7 @@ stateDiagram-v2
     Uninitialized --> [*]
 ```
 
-**`LLID` states.** `epon_llid_state_t` has five values, reported per `LLID` in
+**The `LLID` states.** `epon_llid_state_t` has five values, reported per `LLID` in
 `epon_llid_info_t.state` by `epon_hal_get_llid_info()`:
 
 | Value | Meaning |
