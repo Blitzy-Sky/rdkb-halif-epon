@@ -538,51 +538,48 @@ sequenceDiagram
     participant Vendor as Vendor Software
     Caller->>HAL: epon_hal_init(config with three callbacks)
     HAL->>Vendor: initialize hardware, install callbacks
-    Vendor->>HAL: initialization result
-    HAL->>Caller: EPON_HAL_SUCCESS
+    Vendor-->>HAL: initialization result
+    HAL-->>Caller: EPON_HAL_SUCCESS
     Caller->>HAL: epon_hal_get_version()
-    HAL->>Caller: packed version, major byte compared
-    Vendor-->>Caller: interface_status_callback with EPON_ONU_INTF_STATUS_LINK_UP, per interface
-    Vendor-->>Caller: status_callback with EPON_ONU_STATUS_REGISTRATION
+    HAL-->>Caller: packed version, major byte compared
+    HAL->>Caller: interface_status_callback with EPON_ONU_INTF_STATUS_LINK_UP, per interface
+    HAL->>Caller: status_callback with EPON_ONU_STATUS_REGISTRATION
     Caller->>HAL: epon_hal_get_link_info(info)
     HAL->>Vendor: read negotiated mode and encryption
-    Vendor->>HAL: link properties
-    HAL->>Caller: EPON_HAL_SUCCESS
+    Vendor-->>HAL: link properties
+    HAL-->>Caller: EPON_HAL_SUCCESS
     Caller->>HAL: epon_hal_get_olt_info(olt_info with struct_size set)
-    HAL->>Caller: EPON_HAL_SUCCESS
+    HAL-->>Caller: EPON_HAL_SUCCESS
     Caller->>HAL: epon_hal_get_interface_list(if_list)
-    HAL->>Caller: EPON_HAL_SUCCESS
+    HAL-->>Caller: EPON_HAL_SUCCESS
     Caller->>HAL: epon_hal_get_manufacturer_info(info with struct_size set)
-    HAL->>Caller: EPON_HAL_SUCCESS
+    HAL-->>Caller: EPON_HAL_SUCCESS
     Caller->>HAL: epon_hal_get_llid_info(llid_list)
     HAL->>Vendor: read LLID table
-    Vendor->>HAL: LLID records
-    HAL->>Caller: EPON_HAL_SUCCESS, llid_list allocated
+    Vendor-->>HAL: LLID records
+    HAL-->>Caller: EPON_HAL_SUCCESS, llid_list allocated
     note over Caller: RDK-B Middleware frees llid_list when done
     Caller->>HAL: epon_hal_get_link_stats(stats with struct_size set)
-    HAL->>Caller: EPON_HAL_SUCCESS
+    HAL-->>Caller: EPON_HAL_SUCCESS
     Caller->>HAL: epon_hal_get_transceiver_stats(stats with struct_size set)
-    HAL->>Caller: EPON_HAL_SUCCESS or EPON_HAL_ERROR_NOT_SUPPORTED
+    HAL-->>Caller: EPON_HAL_SUCCESS or EPON_HAL_ERROR_NOT_SUPPORTED
     Caller->>HAL: epon_hal_set_oam_log_mask(mask)
-    HAL->>Caller: EPON_HAL_SUCCESS
+    HAL-->>Caller: EPON_HAL_SUCCESS
     Caller->>HAL: epon_hal_clear_stats()
-    HAL->>Caller: EPON_HAL_SUCCESS
-    Vendor-->>Caller: alarm_callback, alarm raised then cleared
+    HAL-->>Caller: EPON_HAL_SUCCESS
+    HAL->>Caller: alarm_callback, alarm raised then cleared
     Caller->>HAL: epon_hal_reset_onu()
     HAL->>Vendor: soft reset and MPCP re-registration
-    Vendor-->>Caller: status_callback, deregistration then registration
-    HAL->>Caller: EPON_HAL_SUCCESS
+    HAL-->>Caller: EPON_HAL_SUCCESS
+    HAL->>Caller: status_callback, deregistration then registration
     Caller->>HAL: epon_hal_deinit()
     HAL->>Vendor: deregister ONU from OLT, release resources
-    HAL->>Caller: EPON_HAL_SUCCESS
+    HAL-->>Caller: EPON_HAL_SUCCESS
 ```
 
 `dpoe_hal_get_cpe_mac_table` is not shown: it is optional and, on a
 `DPoE`-capable platform, may be called at any point after initialization, with
 the same caller-frees obligation as `epon_hal_get_llid_info`.
-
-The diagrams in this document are fenced `mermaid` blocks, which render on
-GitHub and appear as source text in the generated documentation site.
 
 ### State Diagram
 
